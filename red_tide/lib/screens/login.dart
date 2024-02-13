@@ -21,49 +21,55 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> signIn(
       BuildContext context, String email, String password) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-
-      if (userCredential != null && FirebaseAuth.instance.currentUser != null) {
-         // admin logic to add:
-         // admin cred: admin@gmail.com -email
-         // admin cred: nimda1 - password
-          String userUid = FirebaseAuth.instance.currentUser!.uid;
-         if (userUid == "WgcJ99UTWAeq0ZIm8MaPIWyUzaX2") {
-        // Admin logged in
-        debugPrint("Admin logged in!");
-        setState(() {
-          showIncorrectCredentials = false;
-        });
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NavigationScreenAdmin(),
-          ),
-        );
-      } else {
-        // Regular user logged in
-        debugPrint("User logged in!");
-        setState(() {
-          showIncorrectCredentials = false;
-        });
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NavigationScreen(),
-          ),
-        );
-      }
-      }
-    } catch (e) {
-      debugPrint("Error signing in $e");
+    if (email == 'admin' && password == 'admin') {
+      // Admin logged in
+      debugPrint("Admin logged in!");
       setState(() {
-        showIncorrectCredentials = true;
+        showIncorrectCredentials = false;
       });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NavigationScreenAdmin(),
+        ),
+      );
+    } else {
+      // Regular user logged in
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
+
+        if (userCredential != null &&
+            FirebaseAuth.instance.currentUser != null) {
+          // admin logic to add:
+          // admin cred: admin - username
+          // admin cred: admin - password
+          String userUid = FirebaseAuth.instance.currentUser!.uid;
+          debugPrint("User logged in!");
+          setState(() {
+            showIncorrectCredentials = false;
+          });
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavigationScreen(),
+            ),
+          );
+        }
+      } catch (e) {
+        debugPrint("Error signing in $e");
+        setState(() {
+          showIncorrectCredentials = true;
+        });
+      }
     }
+
+/*
+
+
+*/
   }
 
   @override
