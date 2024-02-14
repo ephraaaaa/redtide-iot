@@ -19,15 +19,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool showIncorrectCredentials = false;
 
-  Future<void> signIn(
-      BuildContext context, String email, String password) async {
-    if (email == 'admin' && password == 'admin') {
+  Future<void> signIn(BuildContext context, TextEditingController email,
+      TextEditingController password) async {
+    if (email.text == 'admin' && password.text == 'admin') {
       // Admin logged in
       debugPrint("Admin logged in!");
       setState(() {
         showIncorrectCredentials = false;
       });
-
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -38,7 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
       // Regular user logged in
       try {
         UserCredential userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
+            .signInWithEmailAndPassword(
+                email: email.text, password: password.text);
 
         if (userCredential != null &&
             FirebaseAuth.instance.currentUser != null) {
@@ -108,8 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   : SizedBox(),
               customSizedBox(20),
               customButton(35, 200, () {
-                signIn(
-                    context, _emailController.text, _passwordController.text);
+                signIn(context, _emailController, _passwordController);
               }, "LOGIN"),
               customSizedBox(10),
               GestureDetector(
